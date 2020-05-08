@@ -33,6 +33,10 @@ ul {
   border-image-repeat: round;
 }
 
+#container.dragging {
+  user-select: none;
+}
+
 li {
   position: absolute;
   box-sizing: border-box;

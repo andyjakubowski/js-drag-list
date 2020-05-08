@@ -24,7 +24,6 @@ let state = {
   isDragging: false,
   draggedElement: null,
   dragOffset: {
-    x: 0,
     y: 0,
   },
   maxZIndex: 10,
@@ -69,12 +68,14 @@ function startDragging(element, offset) {
   state.maxZIndex += 1;
   state.draggedElement.style.setProperty("z-index", `${state.maxZIndex}`);
   setDraggingClass(state.draggedElement, true);
+  setDraggingClass(container, true);
 }
 
 function stopDragging(element) {
   console.log("stopDragging");
   state.isDragging = false;
   setDraggingClass(state.draggedElement, false);
+  setDraggingClass(container, false);
   state.draggedElement = null;
 }
 
@@ -94,6 +95,12 @@ function handleMouseUp(e) {
   }
 }
 
+function handleSelect(e) {
+  if (state.isDragging) {
+    e.preventDefault();
+  }
+}
+
 function handleMouseMove(e) {
   logEvent(e);
 
@@ -103,18 +110,12 @@ function handleMouseMove(e) {
 
   const el = state.draggedElement;
   const elRect = el.getBoundingClientRect();
-  const preferredX = e.clientX - containerRect.left - state.dragOffset.x;
   const preferredY = e.clientY - containerRect.top - state.dragOffset.y;
-  const x = Math.min(
-    Math.max(preferredX, 0),
-    containerRect.width - elRect.width
-  );
   const y = Math.min(
     Math.max(preferredY, 0),
     containerRect.height - elRect.height
   );
 
-  el.style.setProperty("left", `${x}px`);
   el.style.setProperty("top", `${y}px`);
 }
 
@@ -132,3 +133,4 @@ state.items.forEach((item) => {
 
 document.body.addEventListener("mouseup", handleMouseUp);
 document.body.addEventListener("mousemove", handleMouseMove);
+document.body.addEventListener("select", handleSelect);
