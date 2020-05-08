@@ -32,7 +32,51 @@ const items = [
     domNode: null,
   },
   {
-    name: "Plumes",
+    name: "Plum",
+    domNode: null,
+  },
+  {
+    name: "Pear",
+    domNode: null,
+  },
+  {
+    name: "Peach",
+    domNode: null,
+  },
+  {
+    name: "Grapefruit",
+    domNode: null,
+  },
+  {
+    name: "Date",
+    domNode: null,
+  },
+  {
+    name: "Apricot",
+    domNode: null,
+  },
+  {
+    name: "Passionfruit",
+    domNode: null,
+  },
+  {
+    name: "Cherries",
+    domNode: null,
+  },
+  {
+    name: "Grapes",
+    domNode: null,
+  },
+  {
+    name: "Guava",
+    domNode: null,
+  },
+  {
+    name: "Lemon",
+    domNode: null,
+  },
+  {
+    name: "Mango",
     domNode: null,
   },
 ];
