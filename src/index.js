@@ -4,6 +4,10 @@ const containerRect = container.getBoundingClientRect();
 const timeoutMs = 0;
 let timeoutId;
 let isDragging = false;
+let draggedElement = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let maxZIndex = 10;
 
 let state = {
   items: [
@@ -58,15 +62,19 @@ function setDraggingClass(element, value) {
 
 function startDragging(element, offset) {
   console.log("startDragging");
-  // [dragOffsetX, dragOffsetY] = offset;
+  [dragOffsetX, dragOffsetY] = offset;
   isDragging = true;
-  setDraggingClass(element, true);
+  draggedElement = element;
+  maxZIndex += 1;
+  draggedElement.style.setProperty("z-index", `${maxZIndex}`);
+  setDraggingClass(draggedElement, true);
 }
 
 function stopDragging(element) {
   console.log("stopDragging");
   isDragging = false;
-  setDraggingClass(element, false);
+  setDraggingClass(draggedElement, false);
+  draggedElement = null;
 }
 
 function handleMouseDown(e) {
@@ -79,7 +87,34 @@ function handleMouseDown(e) {
 function handleMouseUp(e) {
   logEvent(e);
   clearTimeout(timeoutId);
-  stopDragging(e.currentTarget);
+
+  if (isDragging) {
+    stopDragging(draggedElement);
+  }
+}
+
+function handleMouseMove(e) {
+  logEvent(e);
+
+  if (!isDragging) {
+    return;
+  }
+
+  const el = draggedElement;
+  const elRect = el.getBoundingClientRect();
+  const preferredX = e.clientX - containerRect.left - dragOffsetX;
+  const preferredY = e.clientY - containerRect.top - dragOffsetY;
+  const x = Math.min(
+    Math.max(preferredX, 0),
+    containerRect.width - elRect.width
+  );
+  const y = Math.min(
+    Math.max(preferredY, 0),
+    containerRect.height - elRect.height
+  );
+
+  el.style.setProperty("left", `${x}px`);
+  el.style.setProperty("top", `${y}px`);
 }
 
 function init() {
@@ -92,5 +127,7 @@ init();
 
 state.items.forEach((item) => {
   item.domNode.addEventListener("mousedown", handleMouseDown);
-  item.domNode.addEventListener("mouseup", handleMouseUp);
 });
+
+document.body.addEventListener("mouseup", handleMouseUp);
+document.body.addEventListener("mousemove", handleMouseMove);
