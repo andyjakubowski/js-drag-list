@@ -2,10 +2,10 @@ import seedData from "./seedData.js";
 import utils from "./utilities.js";
 
 const container = document.getElementById("container");
-const containerRect = container.getBoundingClientRect();
 const timeoutMs = 0;
 const itemHeight = 50;
 let timeoutId;
+let containerRect;
 
 let state = {
   items: seedData,
@@ -16,6 +16,12 @@ let state = {
   },
   maxZIndex: 10,
 };
+
+function setContainerGeometry() {
+  const height = state.items.length * itemHeight;
+  container.style.setProperty("height", `${height}px`);
+  containerRect = container.getBoundingClientRect();
+}
 
 function calculateTopOffset(orderId) {
   return `${orderId * itemHeight}px`;
@@ -126,7 +132,7 @@ function handleMouseMove(e) {
 
   const el = state.draggedElement;
   const elRect = el.getBoundingClientRect();
-  const preferredY = e.clientY - containerRect.top - state.dragOffset.y;
+  const preferredY = e.pageY - containerRect.top - state.dragOffset.y;
   const y = utils.clamp(preferredY, 0, containerRect.height - elRect.height);
   const newOrderId = calculateOrderId(y, itemHeight, state.items.length - 1);
 
@@ -146,6 +152,7 @@ function init() {
   const elements = render(state);
   mountIntoDOM(elements, container);
   bindDomNodesToState();
+  setContainerGeometry();
 }
 
 init();
