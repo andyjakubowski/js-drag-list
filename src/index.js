@@ -1,13 +1,7 @@
-const root = document.documentElement;
 const container = document.getElementById("container");
 const containerRect = container.getBoundingClientRect();
 const timeoutMs = 0;
 let timeoutId;
-let isDragging = false;
-let draggedElement = null;
-let dragOffsetX = 0;
-let dragOffsetY = 0;
-let maxZIndex = 10;
 
 let state = {
   items: [
@@ -27,6 +21,13 @@ let state = {
       domNode: null,
     },
   ],
+  isDragging: false,
+  draggedElement: null,
+  dragOffset: {
+    x: 0,
+    y: 0,
+  },
+  maxZIndex: 10,
 };
 
 function render(props) {
@@ -62,19 +63,19 @@ function setDraggingClass(element, value) {
 
 function startDragging(element, offset) {
   console.log("startDragging");
-  [dragOffsetX, dragOffsetY] = offset;
-  isDragging = true;
-  draggedElement = element;
-  maxZIndex += 1;
-  draggedElement.style.setProperty("z-index", `${maxZIndex}`);
-  setDraggingClass(draggedElement, true);
+  [state.dragOffset.x, state.dragOffset.y] = offset;
+  state.isDragging = true;
+  state.draggedElement = element;
+  state.maxZIndex += 1;
+  state.draggedElement.style.setProperty("z-index", `${state.maxZIndex}`);
+  setDraggingClass(state.draggedElement, true);
 }
 
 function stopDragging(element) {
   console.log("stopDragging");
-  isDragging = false;
-  setDraggingClass(draggedElement, false);
-  draggedElement = null;
+  state.isDragging = false;
+  setDraggingClass(state.draggedElement, false);
+  state.draggedElement = null;
 }
 
 function handleMouseDown(e) {
@@ -88,22 +89,22 @@ function handleMouseUp(e) {
   logEvent(e);
   clearTimeout(timeoutId);
 
-  if (isDragging) {
-    stopDragging(draggedElement);
+  if (state.isDragging) {
+    stopDragging(state.draggedElement);
   }
 }
 
 function handleMouseMove(e) {
   logEvent(e);
 
-  if (!isDragging) {
+  if (!state.isDragging) {
     return;
   }
 
-  const el = draggedElement;
+  const el = state.draggedElement;
   const elRect = el.getBoundingClientRect();
-  const preferredX = e.clientX - containerRect.left - dragOffsetX;
-  const preferredY = e.clientY - containerRect.top - dragOffsetY;
+  const preferredX = e.clientX - containerRect.left - state.dragOffset.x;
+  const preferredY = e.clientY - containerRect.top - state.dragOffset.y;
   const x = Math.min(
     Math.max(preferredX, 0),
     containerRect.width - elRect.width
