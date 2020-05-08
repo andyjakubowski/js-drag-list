@@ -113,6 +113,13 @@ function handleSelect(e) {
   }
 }
 
+function move(array, prevIndex, nextIndex) {
+  const arrayCopy = [...array];
+  const item = arrayCopy.splice(prevIndex, 1)[0];
+  arrayCopy.splice(nextIndex, 0, item);
+  return arrayCopy;
+}
+
 function handleMouseMove(e) {
   logEvent(e);
 
