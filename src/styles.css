@@ -18,28 +18,6 @@ ul {
   list-style-type: none;
 }
 
-li {
-  box-sizing: border-box;
-
-  display: flex;
-  align-items: center;
-  height: 50px;
-  border-bottom: 1px solid black;
-  padding-inline-start: 10px;
-
-  background-color: white;
-  background-image: url("./grid-white.png");
-  background-size: 100px;
-
-  cursor: grab;
-}
-
-li.dragging {
-  box-shadow: 0 2px 16px red;
-
-  cursor: grabbing;
-}
-
 #container {
   position: relative;
   /* border: 20px solid cadetblue; */
@@ -53,4 +31,29 @@ li.dragging {
   border-image-source: url("./grid-cadetblue.png");
   border-image-slice: 40 40;
   border-image-repeat: round;
+}
+
+li {
+  position: absolute;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid black;
+  padding-inline-start: 10px;
+
+  background-color: white;
+  background-image: url("./grid-white.png");
+  background-size: 100px;
+
+  cursor: grab;
+}
+
+li.dragging {
+  box-shadow: 0 2px 16px red;
+  z-index: 100;
+
+  cursor: grabbing;
 }

@@ -1,13 +1,50 @@
 const root = document.documentElement;
 const container = document.getElementById("container");
 const containerRect = container.getBoundingClientRect();
-const itemApples = document.getElementById("item-apples");
-const itemOranges = document.getElementById("item-oranges");
-const itemBananas = document.getElementById("item-bananas");
-const items = [itemApples, itemOranges, itemBananas];
 const timeoutMs = 0;
 let timeoutId;
 let isDragging = false;
+
+let state = {
+  items: [
+    {
+      name: "Apples",
+      orderId: 0,
+      domNode: null,
+    },
+    {
+      name: "Oranges",
+      orderId: 1,
+      domNode: null,
+    },
+    {
+      name: "Bananas",
+      orderId: 2,
+      domNode: null,
+    },
+  ],
+};
+
+function render(props) {
+  return props.items.map((item) => {
+    const topOffsetPx = `${item.orderId * 50}px`;
+    const liElement = document.createElement("li");
+    liElement.id = item.name;
+    liElement.append(item.name);
+    liElement.style.setProperty("top", topOffsetPx);
+    return liElement;
+  });
+}
+
+function mountIntoDOM(elements, target) {
+  target.append(...elements);
+}
+
+function bindDomNodesToState() {
+  state.items.forEach((item) => {
+    item.domNode = document.getElementById(item.name);
+  });
+}
 
 function logEvent(e) {
   console.log(
@@ -45,7 +82,15 @@ function handleMouseUp(e) {
   stopDragging(e.currentTarget);
 }
 
-items.forEach((item) => {
-  item.addEventListener("mousedown", handleMouseDown);
-  item.addEventListener("mouseup", handleMouseUp);
+function init() {
+  const elements = render(state);
+  mountIntoDOM(elements, container);
+  bindDomNodesToState();
+}
+
+init();
+
+state.items.forEach((item) => {
+  item.domNode.addEventListener("mousedown", handleMouseDown);
+  item.domNode.addEventListener("mouseup", handleMouseUp);
 });
