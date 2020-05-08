@@ -29,11 +29,16 @@ let state = {
   maxZIndex: 10,
 };
 
+function calculateTopOffset(orderId) {
+  return `${orderId * 50}px`;
+}
+
 function render(props) {
   return props.items.map((item) => {
-    const topOffsetPx = `${item.orderId * 50}px`;
+    const topOffsetPx = calculateTopOffset(item.orderId);
     const liElement = document.createElement("li");
     liElement.id = item.name;
+    liElement.dataset.orderId = item.orderId;
     liElement.append(item.name);
     liElement.style.setProperty("top", topOffsetPx);
     return liElement;
@@ -60,6 +65,15 @@ function setDraggingClass(element, value) {
   element.classList.toggle("dragging", value);
 }
 
+function snapIntoPosition(element) {
+  console.log(
+    `${element.id} has to snap into orderId: ${element.dataset.orderId}`
+  );
+
+  const offset = calculateTopOffset(element.dataset.orderId);
+  element.style.setProperty("top", offset);
+}
+
 function startDragging(element, offset) {
   console.log("startDragging");
   [state.dragOffset.x, state.dragOffset.y] = offset;
@@ -77,6 +91,7 @@ function stopDragging(element) {
   setDraggingClass(state.draggedElement, false);
   setDraggingClass(container, false);
   state.draggedElement = null;
+  snapIntoPosition(element);
 }
 
 function handleMouseDown(e) {

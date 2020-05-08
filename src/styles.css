@@ -53,10 +53,12 @@ li {
   background-size: 100px;
 
   cursor: grab;
+  transition: top 0.3s;
 }
 
 li.dragging {
   box-shadow: 0 2px 16px red;
   opacity: 0.9;
   cursor: grabbing;
+  transition: unset;
 }
