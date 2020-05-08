@@ -7,17 +7,14 @@ let state = {
   items: [
     {
       name: "Apples",
-      orderId: 0,
       domNode: null,
     },
     {
       name: "Oranges",
-      orderId: 1,
       domNode: null,
     },
     {
       name: "Bananas",
-      orderId: 2,
       domNode: null,
     },
   ],
@@ -34,11 +31,11 @@ function calculateTopOffset(orderId) {
 }
 
 function render(props) {
-  return props.items.map((item) => {
-    const topOffsetPx = calculateTopOffset(item.orderId);
+  return props.items.map((item, index) => {
+    const topOffsetPx = calculateTopOffset(index);
     const liElement = document.createElement("li");
     liElement.id = item.name;
-    liElement.dataset.orderId = item.orderId;
+    liElement.dataset.orderId = index;
     liElement.append(item.name);
     liElement.style.setProperty("top", topOffsetPx);
     return liElement;
