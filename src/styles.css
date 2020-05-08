@@ -1,0 +1,73 @@
+body {
+  height: 400px;
+  margin: 0;
+  padding-block-start: 100px;
+  padding-inline-start: 200px;
+
+  background-color: thistle;
+  background-image: url("./grid-thistle.png");
+  background-size: 100px;
+
+  overflow: hidden;
+}
+
+#container {
+  position: relative;
+  /* border: 20px solid cadetblue; */
+  width: 600px;
+  height: 300px;
+
+  background-color: seashell;
+  background-image: url("./grid-seashell.png");
+  background-size: 100px;
+
+  border-image-source: url("./grid-cadetblue.png");
+  border-image-slice: 40 40;
+  border-image-repeat: round;
+}
+
+#square {
+  position: absolute;
+  left: var(--square-x, 20px);
+  top: var(--square-y, 20px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+
+  color: white;
+  font-weight: bold;
+
+  background-color: midnightblue;
+
+  cursor: grab;
+}
+
+/* #square-text {
+  cursor: text;
+} */
+
+#square.dragging {
+  box-shadow: 0 2px 16px red;
+
+  cursor: grabbing;
+}
+
+#squircle {
+  position: absolute;
+  left: var(--squircle-x, 0);
+  top: var(--squircle-y, 0);
+
+  border-radius: 23px;
+
+  width: 60px;
+  height: 60px;
+
+  background-color: lightcoral;
+}
+
+#squircle.overlapped {
+  background-color: black;
+}

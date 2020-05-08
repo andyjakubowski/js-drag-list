@@ -1,0 +1,16 @@
+{
+  "name": "js-drag-list",
+  "version": "1.0.0",
+  "description": "Exploring moving items within a list",
+  "main": "index.html",
+  "repository": "https://github.com/andyjakubowski/js-drag",
+  "author": "Andy Jakubowski <hello@andyjakubowski.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "browser-sync": "^2.26.7"
+  },
+  "scripts": {
+    "start": "browser-sync start --server 'src' --files 'src'"
+  }
+}
