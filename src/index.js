@@ -1,23 +1,13 @@
+import seedData from "./seedData.js";
+
 const container = document.getElementById("container");
 const containerRect = container.getBoundingClientRect();
 const timeoutMs = 0;
+const itemHeight = 50;
 let timeoutId;
 
 let state = {
-  items: [
-    {
-      name: "Apples",
-      domNode: null,
-    },
-    {
-      name: "Oranges",
-      domNode: null,
-    },
-    {
-      name: "Bananas",
-      domNode: null,
-    },
-  ],
+  items: seedData,
   isDragging: false,
   draggedElement: null,
   dragOffset: {
@@ -27,10 +17,12 @@ let state = {
 };
 
 function calculateTopOffset(orderId) {
-  return `${orderId * 50}px`;
+  return `${orderId * itemHeight}px`;
 }
 
 function render(props) {
+  console.log("render called with props:");
+  console.log(props.items);
   return props.items.map((item, index) => {
     const topOffsetPx = calculateTopOffset(index);
     const liElement = document.createElement("li");
@@ -39,6 +31,15 @@ function render(props) {
     liElement.append(item.name);
     liElement.style.setProperty("top", topOffsetPx);
     return liElement;
+  });
+}
+
+function updateDom(items) {
+  return items.map((item, index) => {
+    const topOffsetPx = calculateTopOffset(index);
+    const element = item.domNode;
+    element.dataset.orderId = index;
+    element.style.setProperty("top", topOffsetPx);
   });
 }
 
@@ -120,9 +121,21 @@ function move(array, prevIndex, nextIndex) {
   return arrayCopy;
 }
 
-function handleMouseMove(e) {
-  logEvent(e);
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
 
+function calculateOrderId(dragY, itemHeight, maxOrderId) {
+  const measuredOrderId = Math.round(dragY / itemHeight);
+  return clamp(measuredOrderId, 0, maxOrderId);
+}
+
+function setItems(items) {
+  state.items = items;
+  updateDom(state.items);
+}
+
+function handleMouseMove(e) {
   if (!state.isDragging) {
     return;
   }
@@ -130,10 +143,13 @@ function handleMouseMove(e) {
   const el = state.draggedElement;
   const elRect = el.getBoundingClientRect();
   const preferredY = e.clientY - containerRect.top - state.dragOffset.y;
-  const y = Math.min(
-    Math.max(preferredY, 0),
-    containerRect.height - elRect.height
-  );
+  const y = clamp(preferredY, 0, containerRect.height - elRect.height);
+  const newOrderId = calculateOrderId(y, itemHeight, state.items.length - 1);
+
+  if (newOrderId !== Number(el.dataset.orderId)) {
+    const newItems = move(state.items, Number(el.dataset.orderId), newOrderId);
+    setItems(newItems);
+  }
 
   el.style.setProperty("top", `${y}px`);
 }
