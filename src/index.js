@@ -1,4 +1,5 @@
 import seedData from "./seedData.js";
+import utils from "./utilities.js";
 
 const container = document.getElementById("container");
 const containerRect = container.getBoundingClientRect();
@@ -53,12 +54,6 @@ function bindDomNodesToState() {
   });
 }
 
-function logEvent(e) {
-  console.log(
-    `${e.type}, target: ${e.target.id}, currentTarget: ${e.currentTarget.id}, timeStamp: ${e.timeStamp}`
-  );
-}
-
 function setDraggingClass(element, value) {
   element.classList.toggle("dragging", value);
 }
@@ -93,14 +88,14 @@ function stopDragging(element) {
 }
 
 function handleMouseDown(e) {
-  logEvent(e);
+  utils.logEvent(e);
   const element = e.currentTarget;
   const offset = [e.offsetX, e.offsetY];
   timeoutId = setTimeout(startDragging.bind(null, element, offset), timeoutMs);
 }
 
 function handleMouseUp(e) {
-  logEvent(e);
+  utils.logEvent(e);
   clearTimeout(timeoutId);
 
   if (state.isDragging) {
@@ -114,20 +109,9 @@ function handleSelect(e) {
   }
 }
 
-function move(array, prevIndex, nextIndex) {
-  const arrayCopy = [...array];
-  const item = arrayCopy.splice(prevIndex, 1)[0];
-  arrayCopy.splice(nextIndex, 0, item);
-  return arrayCopy;
-}
-
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
-}
-
 function calculateOrderId(dragY, itemHeight, maxOrderId) {
   const measuredOrderId = Math.round(dragY / itemHeight);
-  return clamp(measuredOrderId, 0, maxOrderId);
+  return utils.clamp(measuredOrderId, 0, maxOrderId);
 }
 
 function setItems(items) {
@@ -143,11 +127,15 @@ function handleMouseMove(e) {
   const el = state.draggedElement;
   const elRect = el.getBoundingClientRect();
   const preferredY = e.clientY - containerRect.top - state.dragOffset.y;
-  const y = clamp(preferredY, 0, containerRect.height - elRect.height);
+  const y = utils.clamp(preferredY, 0, containerRect.height - elRect.height);
   const newOrderId = calculateOrderId(y, itemHeight, state.items.length - 1);
 
   if (newOrderId !== Number(el.dataset.orderId)) {
-    const newItems = move(state.items, Number(el.dataset.orderId), newOrderId);
+    const newItems = utils.move(
+      state.items,
+      Number(el.dataset.orderId),
+      newOrderId
+    );
     setItems(newItems);
   }
 
